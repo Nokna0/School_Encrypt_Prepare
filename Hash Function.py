@@ -21,6 +21,8 @@ def unhash(hash_value):
     
     return result
 
-print(hash(input()))
+target = input()
 
-print(unhash(hash(input())))
+print(hash(target))
+
+print(unhash(hash(target)))

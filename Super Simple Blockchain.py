@@ -3,9 +3,14 @@ import json
 import hashlib
 
 class Block: # 스스로 불러온 재앙에 짓눌려
-  pass
+    def __init__(self, index, previous_hash, timestamp, data, nonce=0):
+      self.index = index
+      self.previous_hash = previous_hash
+      self.timestamp = timestamp
+      self.data = data
+      self.nonce = nonce
+      self.hash = self.calculate_hash(
   '''
-  블록을 초기화한다
   모든 정보를 묶고, 해시값으로 바꾼다
   [[채굴하는 코드]]
   

@@ -1,5 +1,4 @@
 import time
-import json
 import hashlib
 
 class Block: # 스스로 불러온 재앙에 짓눌려
@@ -12,8 +11,15 @@ class Block: # 스스로 불러온 재앙에 짓눌려
         self.hash = self.calculate_hash()
         
     def calculate_hash(self):
-        block_string = f"{self.index}{self.previous_hash}{self.timestamp}{self.data}{self.nonce}"
-        return hashlib.sha256(block_string.encode()).hexdigest()  
+        block_string = f"{self.index}{self.previous_hash}{self.timestamp}{self.data}{self.nonce}"
+        return hashlib.sha256(block_string.encode()).hexdigest()
+    
+    def mine_block(self, difficulty):
+        target = "0" * difficulty
+        while self.hash[:difficulty] != target:
+            self.nonce += 1
+            self.hash = self.calculate_hash()
+        print(f"블록 채굴 완료! Nonce: {self.nonce}, 해시: {self.hash}")
 
 class Blockchain:
     def __init__(self):
@@ -76,6 +82,6 @@ if __name__ == "__main__":
     print(f"\n블록체인 유효성: {my_blockchain.is_chain_valid()}")
 
     # 해킹 시도 시뮬레이션
-    print("\n\n===== 해킹 시도 (블록 #1 데이터 변조) =====")
+    print("\n===== 해킹 시도 (블록 #1 데이터 변조) =====")
     my_blockchain.chain[1].data = "A가 B에게 1000 코인 전송"
     print(f"블록체인 유효성: {my_blockchain.is_chain_valid()}")

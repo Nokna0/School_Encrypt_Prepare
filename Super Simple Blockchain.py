@@ -63,15 +63,7 @@ class Blockchain:
             print(f"    이전 해시: {block.previous_hash}")
             print(f"    현재 해시: {block.hash}")
             print(f"Nonce: {block.nonce}")
-'''
-블록체인 초기화 완
-제네시스 블록 생성 완
-가장 최근에 추가한 블록을 가져온다 완
-새로운 블록을 추가한다 완
-블록체인의 유효성을 검증한다 완
-블록체인의 데이터를 출력한다 완
-'''
-          
+            
 if __name__ == "__main__":
     my_blockchain = Blockchain()
     
@@ -83,16 +75,7 @@ if __name__ == "__main__":
     
     print(f"\n블록체인 유효성: {my_blockchain.is_chain_valid()}")
 
-'''
-<<<블록체인을 시뮬레이션하는 코드>>>
-거래 내역을 담은 블록을 추가한다. 3개정도? 완
-모든 블록의 상태 정보를 화면에 표시한다 완
-유효성 검증 결과를 표시한다 완
-
-
-<<<해킹 시뮬레이션>>>
-블록 1번의 데이터를 10코인에서 1000코인으로 변조한 상황을 가정한다
-유효성 검증을 한다
-해시값을 비교해서 맞지 않다면 검증 실패 메세지를 출력한다
-
-'''
+    # 해킹 시도 시뮬레이션
+    print("\n\n===== 해킹 시도 (블록 #1 데이터 변조) =====")
+    my_blockchain.chain[1].data = "A가 B에게 1000 코인 전송"
+    print(f"블록체인 유효성: {my_blockchain.is_chain_valid()}")

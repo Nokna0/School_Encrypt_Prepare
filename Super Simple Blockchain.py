@@ -39,13 +39,37 @@ class Blockchain:
         new_block.mine_block(self.difficulty)
         self.chain.append(new_block)
         
+    def is_chain_valid(self):
+        # 블록체인 무결성 검증
+        for i in range(1, len(self.chain)):
+            current_block = self.chain[i]
+            previous_block = self.chain[i - 1]
+            
+            if current_block.hash != current_block.calculate_hash():
+                print(f"블록 #{i}의 해시가 유효하지 않습니다!")
+                return False
+            
+            if current_block.previous_hash != previous_block.hash:
+                print(f"블록 #{i}의 체인 연결이 끊어졌습니다!")
+                return False
+        return True
+    
+    def display_chain(self):
+        print("\n===== 블록체인 =====")
+        for block in self.chain:
+            print(f"\n블록 #{block.index}")
+            print(f"    타임스탬프: {time.ctime(block.timestamp)}")
+            print(f"    데이터: {block.data}")
+            print(f"    이전 해시: {block.previous_hash}")
+            print(f"    현재 해시: {block.hash}")
+            print(f"Nonce: {block.nonce}")
 '''
 블록체인 초기화 완
 제네시스 블록 생성 완
 가장 최근에 추가한 블록을 가져온다 완
 새로운 블록을 추가한다 완
-블록체인의 유효성을 검증한다
-블록체인의 데이터를 출력한다
+블록체인의 유효성을 검증한다 완
+블록체인의 데이터를 출력한다 완
 '''
           
 if __name__ == "__main__":

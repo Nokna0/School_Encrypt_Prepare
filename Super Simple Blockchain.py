@@ -15,14 +15,35 @@ class Block: # 스스로 불러온 재앙에 짓눌려
         block_string = f"{self.index}{self.previous_hash}{self.timestamp}{self.data}{self.nonce}"
         return hashlib.sha256(block_string.encode()).hexdigest()  
 
-  
 class Blockchain:
-    pass # 블록체인이라는 클래스를 만들고 그걸 프리셋으로? 만든다
+    def __init__(self):
+        self.chain = [self.create_genesis_block()]
+        self.difficulty = 3
+    
+    def create_genesis_block(self):
+        return Block(0, "0", time.time(), "제네시스 블록")
+    
+    def get_latest_block(self):
+        return self.chain[-1]
+    
+    def add_block(self, data):
+        previous_block = self.get_latest_block()
+        new_block = Block(
+            index=previous_block.index + 1,
+            previous_hash=previous_block.hash,
+            timestamp=time.time(),
+            data=data
+        )
+        
+        print(f"\n블록 #{new_block.index} 채굴 중...")
+        new_block.mine_block(self.difficulty)
+        self.chain.append(new_block)
+        
 '''
-블록체인 초기화
-제네시스 블록 생성
-가장 최근에 추가한 블록을 가져온다
-새로운 블록을 추가한다
+블록체인 초기화 완
+제네시스 블록 생성 완
+가장 최근에 추가한 블록을 가져온다 완
+새로운 블록을 추가한다 완
 블록체인의 유효성을 검증한다
 블록체인의 데이터를 출력한다
 '''
@@ -40,9 +61,9 @@ if __name__ == "__main__":
 
 '''
 <<<블록체인을 시뮬레이션하는 코드>>>
-거래 내역을 담은 블록을 추가한다. 3개정도?
-모든 블록의 상태 정보를 화면에 표시한다
-유효성 검증 결과를 표시한다
+거래 내역을 담은 블록을 추가한다. 3개정도? 완
+모든 블록의 상태 정보를 화면에 표시한다 완
+유효성 검증 결과를 표시한다 완
 
 
 <<<해킹 시뮬레이션>>>

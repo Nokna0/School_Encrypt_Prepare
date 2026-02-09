@@ -6,4 +6,5 @@ Super Simple Encrypt.py<br>
 ## 수학후속활동 알고리즘의 시간복잡도
 Simple XOR Encrypt.py<br>
 이 프로젝트는 <https://github.com/ArdeshirV/Encrypt-String>을 기반으로 수정되었습니다.<br>
+<br>
 Copyright© 2016-2018 ArdeshirV@protonmail.com, Licensed under GPLv3+

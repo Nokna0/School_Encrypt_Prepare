@@ -3,6 +3,7 @@
 # Copyright (c) 2016-2018 ArdeshirV@protonmail.com, Licensed under GPLv3+
 import sys
 import tkinter as tk
+from tkinter import ttk
 import tkinter.filedialog
 
 
@@ -34,21 +35,25 @@ ror = lambda val, r_bits, max_bits: \
         (val << (max_bits-(r_bits%max_bits)) & (2**max_bits-1))
 
 
-def Encode(strPassword, stringInput):
+def Encode(strPassword, stringInput, key_bits=8):
     encoded = ''
     password = abs(int(strPassword))
-    code = password if password <= 255 else password % 255
-    for c in stringInput:
+    max_val = 2**key_bits - 1
+    code = password if password <= max_val else password % max_val
+    num_bytes = key_bits // 8
+    key_bytes = [(code >> (8 * (num_bytes - 1 - i))) & 0xFF for i in range(num_bytes)]
+    for i, c in enumerate(stringInput):
         # m = ord(c)
         # n = ror(m, 4, 8)
         # print('{}-{}'.format(bin(m), bin(n)))
-        encoded += chr(ord(c) ^ code)
+        encoded += chr(ord(c) ^ key_bytes[i % num_bytes])
     return encoded
 
 
 class encode_string(object):
-    def __init__(self, default_code):
+    def __init__(self, default_code, default_key_bits=8):
         self.default_code = default_code
+        self.default_key_bits = default_key_bits
         self.root = tk.Tk()
         #self.root.withdraw()
         #self.root.eval('tk::PlaceWindow %s center' %
@@ -70,22 +75,30 @@ class encode_string(object):
         self.txtCode.grid(row=0, column=1, sticky=tk.W)
         self.txtCode.focus_set()
         self.Code.set(self.default_code)
+        self.KeyBits = tk.StringVar()
+        k_kb = tk.Label(r, text='Key Bits: ')
+        k_kb.grid(row=1, column=0, sticky=tk.E)
+        self.cmbKeyBits = ttk.Combobox(r, textvariable=self.KeyBits,
+                                       values=['8', '16', '32', '64', '128', '256'],
+                                       state='readonly', width=17)
+        self.cmbKeyBits.grid(row=1, column=1, sticky=tk.W)
+        self.KeyBits.set(str(self.default_key_bits))
         self.String = tk.StringVar()
         k_b = tk.Label(r, text='String: ')
-        k_b.grid(row=1, column=0, sticky=tk.E)
+        k_b.grid(row=2, column=0, sticky=tk.E)
         self.txtString = tk.Entry(r, text=self.String)
-        self.txtString.grid(row=1, column=1)
+        self.txtString.grid(row=2, column=1)
         self.txtString.focus_set()
         b = tk.Button(r, text='Load ...', command=self.Load)
-        b.grid(row=1, column=2)
+        b.grid(row=2, column=2)
         self.Encrypted = tk.StringVar()
         k_b = tk.Label(r, text='Encrypted: ')
-        k_b.grid(row=2, column=0, sticky=tk.E)
+        k_b.grid(row=3, column=0, sticky=tk.E)
         self.txtOutput = tk.Entry(r, text=self.Encrypted, state="readonly")
-        self.txtOutput.grid(row=2, column=1)
+        self.txtOutput.grid(row=3, column=1)
         # self.txtOutput.focus_set()
         b = tk.Button(r, text='Save ...', command=self.SaveAs)
-        b.grid(row=2, column=2)
+        b.grid(row=3, column=2)
         r2 = self.frame2
         b = tk.Button(r2, text='Paste String', command=self.PasteFromClipboard)
         b.pack(side='left')
@@ -124,7 +137,13 @@ class encode_string(object):
     def Encrypt(self):
         code = self.txtCode.get()
         data = self.txtString.get()
-        self.Encrypted.set(Encode(code, data))
+        key_bits = int(self.KeyBits.get())
+        possible_keys = 2 ** key_bits
+        brute_force_time = possible_keys / (10**9)
+        print('키 길이: {}비트'.format(key_bits))
+        print('가능한 키 개수: {:,}'.format(possible_keys))
+        print('무차별 대입 복호화 시간: {}초 (10^9 시도/초 기준)'.format(brute_force_time))
+        self.Encrypted.set(Encode(code, data, key_bits))
 
     def close(self):
         quit()
